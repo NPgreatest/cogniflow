@@ -45,13 +45,14 @@ This prototype is intended to answer one question: **can AI turn a person's info
 
 ## Episode generator (early prototype)
 
-The Python command-line prototype selects AI/MLE items, writes a source-linked script and episode metadata, and can create a short audio file on macOS. It uses the Python standard library and needs no paid API key.
+The Python command-line prototype selects AI/MLE items, writes a source-linked script and episode metadata, and can create a short audio file on macOS. The optional AI writing step uses an OpenAI API key stored locally in `.env` (never commit this file).
 
 ```bash
 python3 episode_generator.py --out episode-output
 python3 episode_generator.py --live-hn --live-papers --tts --out episode-output
+python3 episode_generator.py --live-hn --live-papers --live-only --ai --tts --out episode-output
 ```
 
 The output contains `episode.json` (chapters, reasons, and source links) and `episode.txt` (spoken script). With `--tts`, macOS `say` also creates `episode.aiff`. Edit `examples/profile.json` to change interests or `examples/stories.json` to add manually reviewed links. Live fetches need internet access; if a source is unavailable, the command falls back to the sample inputs.
 
-This is a **grounded pipeline skeleton**, not yet an AI-written podcast: it only narrates supplied headlines and summaries, explicitly labels headline-only items, and does not infer facts from article links. The next improvement is a reviewed research-and-script stage that connects stories without inventing claims.
+Without `--ai`, this is a simple, no-cost template-based pipeline. With `--ai`, one low-cost model call creates a structured episode from retrieved headlines and summaries. It does **not** browse or read full articles; headline-only stories are explicitly qualified. Review the script against the linked sources before sharing it. The next improvement is a source-reading and fact-checking stage that can support more substantial commentary.

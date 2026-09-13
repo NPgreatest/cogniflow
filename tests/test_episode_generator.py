@@ -1,6 +1,9 @@
 import unittest
+import io
+import json
+from unittest.mock import patch
 
-from episode_generator import create_episode, dedupe, select_stories
+from episode_generator import compose_with_openai, create_episode, dedupe, select_stories
 
 
 class EpisodeTests(unittest.TestCase):
@@ -25,6 +28,19 @@ class EpisodeTests(unittest.TestCase):
         selected = select_stories([{**self.story, "summary": ""}], {"topics": ["agents"]}, 3)
         episode = create_episode(selected, {"topics": ["agents"]})
         self.assertIn("not verified the full article", episode["script"])
+
+    def test_ai_output_preserves_source_link(self):
+        selected = select_stories([self.story], {"topics": ["agents"]}, 1)
+        draft = {"title": "AI evaluation", "opening": "Welcome.",
+                 "segments": [{"story_id": "one", "narration": "Example describes an evaluation method."}],
+                 "closing": "Source links are in the notes."}
+        response = {"output": [{"type": "message", "content": [
+            {"type": "output_text", "text": json.dumps(draft)}]}], "usage": {"input_tokens": 1}}
+        with patch.dict("os.environ", {"OPENAI_API_KEY": "test-key"}), \
+             patch("urllib.request.urlopen", return_value=io.BytesIO(json.dumps(response).encode())):
+            episode = compose_with_openai(selected, {"topics": ["agents"]}, "test-model")
+        self.assertEqual(episode["chapters"][0]["url"], self.story["url"])
+        self.assertEqual(episode["model"], "test-model")
 
 
 if __name__ == "__main__":
