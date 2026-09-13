@@ -1,0 +1,29 @@
+[
+  {
+    "id": "sample-1",
+    "title": "Machine learning systems need careful evaluation before deployment",
+    "url": "https://developers.google.com/machine-learning/crash-course/production-ml-systems",
+    "source": "Google ML Crash Course",
+    "published_at": "",
+    "summary": "Production machine learning systems include much more than model code, including data collection, verification, monitoring, and serving.",
+    "evidence_level": "editorial_fixture"
+  },
+  {
+    "id": "sample-2",
+    "title": "Agents combine models, tools, and a control flow",
+    "url": "https://www.anthropic.com/engineering/building-effective-agents",
+    "source": "Anthropic Engineering",
+    "published_at": "",
+    "summary": "Agent systems can be organized as predefined workflows or as more autonomous agents that choose their own tool use.",
+    "evidence_level": "editorial_fixture"
+  },
+  {
+    "id": "sample-3",
+    "title": "Text to speech systems turn written input into audio",
+    "url": "https://huggingface.co/tasks/text-to-speech",
+    "source": "Hugging Face",
+    "published_at": "",
+    "summary": "Text-to-speech models generate speech audio from text and can differ in voice, language, and synthesis approach.",
+    "evidence_level": "editorial_fixture"
+  }
+]

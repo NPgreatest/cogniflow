@@ -8,3 +8,6 @@ coverage/
 *.log
 *.mp3
 *.wav
+*.aiff
+episode-output/
+__pycache__/

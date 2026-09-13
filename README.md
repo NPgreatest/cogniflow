@@ -42,3 +42,16 @@ The current demo uses mock stories and simulated generation. It does not call pa
 Open `index.html` directly in a modern browser. No installation or build step is required.
 
 This prototype is intended to answer one question: **can AI turn a person's information interests into a daily audio experience that genuinely improves how they understand the world?**
+
+## Episode generator (early prototype)
+
+The Python command-line prototype selects AI/MLE items, writes a source-linked script and episode metadata, and can create a short audio file on macOS. It uses the Python standard library and needs no paid API key.
+
+```bash
+python3 episode_generator.py --out episode-output
+python3 episode_generator.py --live-hn --live-papers --tts --out episode-output
+```
+
+The output contains `episode.json` (chapters, reasons, and source links) and `episode.txt` (spoken script). With `--tts`, macOS `say` also creates `episode.aiff`. Edit `examples/profile.json` to change interests or `examples/stories.json` to add manually reviewed links. Live fetches need internet access; if a source is unavailable, the command falls back to the sample inputs.
+
+This is a **grounded pipeline skeleton**, not yet an AI-written podcast: it only narrates supplied headlines and summaries, explicitly labels headline-only items, and does not infer facts from article links. The next improvement is a reviewed research-and-script stage that connects stories without inventing claims.
