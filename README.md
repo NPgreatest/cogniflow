@@ -1,6 +1,6 @@
-# Project Codename
+# Cogniflow
 
-An AI-powered knowledge companion that turns the information a person cares about into a personalized daily audio briefing.
+**Cogniflow** is an AI-powered knowledge companion that turns the information a person cares about into a personalized daily audio briefing.
 
 The product is designed for moments when people cannot or do not want to look at a screen—commuting, driving, walking, exercising, or doing chores. Instead of asking users to browse through endless feeds and podcasts, it learns their interests, context, and existing knowledge, then helps them continuously absorb useful new ideas.
 
