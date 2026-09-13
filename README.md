@@ -14,7 +14,11 @@ The local web app lets you:
 
 The writing step uses the prompt in [`prompts/podcast_v1.txt`](prompts/podcast_v1.txt). It aims for a listenable narrative rather than a sequence of article summaries. This is an early prototype: it reads titles and available abstracts, **not full articles**, and the resulting claims should be checked against the linked sources. The Mac voice is a convenient audio baseline, not the intended final TTS quality.
 
-![Current Cogniflow web MVP: live-source selection and episode builder](assets/cogniflow-web-mvp.png)
+### Web app preview
+
+The full-page view below shows the current flow: choose live sources on the left, curate a few items, then set a learning focus and writing model on the right. After **Write my episode**, the page adds a continuous podcast script, source links, and an MP3 player/download option beneath the builder.
+
+![Full-page Cogniflow web MVP with source selection, story feed, and episode builder](assets/cogniflow-full-page.png)
 
 ## Try it locally
 
