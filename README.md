@@ -37,6 +37,8 @@ The current demo uses mock stories and simulated generation. It does not call pa
 
 ## Demo
 
+![Cogniflow interactive demo overview](assets/cogniflow-overview.jpg)
+
 Open `index.html` directly in a modern browser. No installation or build step is required.
 
 The repository currently contains:
