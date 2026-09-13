@@ -41,14 +41,4 @@ The current demo uses mock stories and simulated generation. It does not call pa
 
 Open `index.html` directly in a modern browser. No installation or build step is required.
 
-The repository currently contains:
-
-```text
-.
-├── index.html   # Interactive overview demo
-├── styles.css   # Responsive visual design
-├── app.js       # Mock feed, generation, and player interactions
-└── README.md    # Product and MVP overview
-```
-
 This prototype is intended to answer one question: **can AI turn a person's information interests into a daily audio experience that genuinely improves how they understand the world?**
