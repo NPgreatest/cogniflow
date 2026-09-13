@@ -56,3 +56,7 @@ python3 episode_generator.py --live-hn --live-papers --live-only --ai --tts --ou
 The output contains `episode.json` (chapters, reasons, and source links) and `episode.txt` (spoken script). With `--tts`, macOS `say` also creates `episode.aiff`. Edit `examples/profile.json` to change interests or `examples/stories.json` to add manually reviewed links. Live fetches need internet access; if a source is unavailable, the command falls back to the sample inputs.
 
 Without `--ai`, this is a simple, no-cost template-based pipeline. With `--ai`, one low-cost model call creates a structured episode from retrieved headlines and summaries. It does **not** browse or read full articles; headline-only stories are explicitly qualified. Review the script against the linked sources before sharing it. The next improvement is a source-reading and fact-checking stage that can support more substantial commentary.
+
+## Local web MVP
+
+Run `python3 web_server.py`, then open `http://127.0.0.1:8765` in a browser. Select Hacker News and/or Hugging Face Daily Papers, refresh the live feed, choose up to five items, choose Luna (lower cost) or Terra (deeper synthesis), then generate a source-linked report. The browser can read the report aloud using its built-in voice. The OpenAI key stays in the local, ignored `.env` file; each click on **Generate report** makes one paid API request. This local server is not intended for public deployment.

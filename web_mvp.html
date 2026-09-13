@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Create a source-linked AI and MLE briefing from fresh papers and headlines.">
+  <title>Cogniflow — Build your briefing</title>
+  <link rel="stylesheet" href="/web_mvp.css">
+  <script src="/web_mvp.js" defer></script>
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="/"><span class="mark">C</span> Cogniflow</a><span class="badge">LOCAL MVP · LIVE SOURCES</span></header>
+  <main>
+    <section class="hero"><span class="eyebrow">KNOW MORE. LISTEN BETTER.</span><h1>Build a briefing<br><em>worth your time.</em></h1><p>Choose fresh research and engineering signals. Cogniflow turns your selections into a concise, source-linked report.</p></section>
+    <div class="workspace">
+      <section class="main-column">
+        <section class="panel controls-panel"><div class="section-head"><span class="step">01 / DISCOVER</span><h2>Where should we look?</h2></div><div class="source-options"><label class="source-option"><input type="checkbox" value="papers" checked><span class="source-icon">◇</span><span><strong>Daily Papers</strong><small>Research abstracts · Hugging Face</small></span></label><label class="source-option"><input type="checkbox" value="hn" checked><span class="source-icon">⌁</span><span><strong>Hacker News</strong><small>Engineering headlines · community</small></span></label></div><div class="feed-actions"><p id="feedStatus" role="status">Ready to discover today's ideas.</p><button id="refreshBtn" class="secondary">Fetch latest <span>↻</span></button></div></section>
+        <section class="panel feed-panel"><div class="section-head"><span class="step">02 / CURATE</span><h2>Pick what matters</h2><p>Choose up to five. Papers with abstracts support a more useful briefing than headline-only links.</p></div><div class="feed-toolbar"><span id="resultCount">No items loaded</span><span id="selectedCount">0 / 5 selected</span></div><div id="storyList" class="story-list"><div class="placeholder">Fetch the latest items to start curating your episode.</div></div></section>
+      </section>
+      <aside class="panel build-panel"><div class="section-head"><span class="step">03 / CREATE</span><h2>Your briefing</h2></div><label class="field">What are you trying to learn?<input id="focusInput" maxlength="120" value="AI agents and machine learning" placeholder="e.g. AI agents, inference, TTS"></label><label class="field">Writing model<select id="modelSelect"><option value="gpt-5.6-luna">Luna · lower cost</option><option value="gpt-5.6-terra">Terra · deeper synthesis</option></select></label><div class="selection-preview" id="selectionPreview">Your selected stories will appear here.</div><button id="generateBtn" class="primary" disabled>Generate report <span>→</span></button><p class="fine-print">One paid model request per click. The model sees selected titles and abstracts, not full articles. Review claims before sharing.</p></aside>
+    </div>
+    <section class="report panel hidden" id="reportPanel" aria-live="polite"><div class="report-top"><div><span class="step">YOUR COGNIFLOW REPORT</span><h2 id="reportTitle"></h2><p id="reportMeta"></p></div><button class="secondary" id="listenBtn">Listen in browser ▶</button></div><p class="report-intro" id="reportIntro"></p><div id="reportChapters"></div><p class="report-closing" id="reportClosing"></p><div class="report-note">AI-generated from source metadata. Always check the linked originals before relying on details.</div></section>
+  </main>
+  <footer>Cogniflow prototype · Runs locally · Your API key stays on this machine</footer>
+</body>
+</html>
