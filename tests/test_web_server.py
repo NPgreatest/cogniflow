@@ -1,7 +1,9 @@
 import json
 import threading
+import tempfile
 import unittest
 import urllib.request
+from pathlib import Path
 from unittest.mock import patch
 
 from web_server import CogniflowServer
@@ -44,7 +46,29 @@ class WebServerTests(unittest.TestCase):
             with urllib.request.urlopen(request) as response:
                 data = json.load(response)
         self.assertEqual(data["episode"], expected)
+        self.assertRegex(data["episode_id"], r"^[0-9a-f]{32}$")
         self.assertEqual(compose.call_args.args[0][0]["url"], STORY["url"])
+
+    def test_audio_is_downloadable_mp3(self):
+        episode_id = "a" * 32
+        self.server.episodes[episode_id] = {"script": "A short test."}
+        with tempfile.TemporaryDirectory() as temporary:
+            def fake_synthesis(script, output):
+                output.mkdir(parents=True)
+                audio = output / "episode.mp3"
+                audio.write_bytes(b"ID3test")
+                return audio
+            body = json.dumps({"episode_id": episode_id}).encode()
+            request = urllib.request.Request(self.base + "/api/audio", data=body,
+                                             headers={"Content-Type": "application/json"})
+            with patch("web_server.AUDIO_ROOT", Path(temporary)), \
+                 patch("web_server.synthesize_macos_mp3", side_effect=fake_synthesis):
+                with urllib.request.urlopen(request) as response:
+                    result = json.load(response)
+                with urllib.request.urlopen(self.base + result["download_url"]) as response:
+                    self.assertEqual(response.headers["Content-Type"], "audio/mpeg")
+                    self.assertIn("attachment", response.headers["Content-Disposition"])
+                    self.assertEqual(response.read(), b"ID3test")
 
 
 if __name__ == "__main__":

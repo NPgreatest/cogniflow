@@ -3,14 +3,17 @@
 from __future__ import annotations
 
 import json
+import re
+import subprocess
 import urllib.error
+import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
 from episode_generator import (
     ROOT, compose_with_openai, dedupe, fetch_hacker_news,
-    fetch_hf_daily_papers, load_env_file, score_story,
+    fetch_hf_daily_papers, load_env_file, score_story, synthesize_macos_mp3,
 )
 
 FILES = {
@@ -20,12 +23,14 @@ FILES = {
 }
 MODELS = {"gpt-5.6-luna", "gpt-5.6-terra"}
 SOURCES = {"hn", "papers"}
+AUDIO_ROOT = ROOT / "episode-output" / "web"
 
 
 class CogniflowServer(ThreadingHTTPServer):
     def __init__(self, address):
         super().__init__(address, CogniflowHandler)
         self.candidates: dict[str, dict] = {}
+        self.episodes: dict[str, dict] = {}
 
 
 class CogniflowHandler(BaseHTTPRequestHandler):
@@ -43,6 +48,26 @@ class CogniflowHandler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         parsed = urlsplit(self.path)
+        if parsed.path.startswith("/api/audio/"):
+            episode_id = parsed.path.removeprefix("/api/audio/")
+            if not re.fullmatch(r"[0-9a-f]{32}", episode_id) or episode_id not in self.server.episodes:
+                self.send_json(404, {"error": "Audio not found"})
+                return
+            audio = AUDIO_ROOT / episode_id / "episode.mp3"
+            if not audio.is_file():
+                self.send_json(404, {"error": "Generate the MP3 first"})
+                return
+            body = audio.read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", "audio/mpeg")
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Cache-Control", "private, no-store")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            disposition = "attachment" if parse_qs(parsed.query).get("download") == ["1"] else "inline"
+            self.send_header("Content-Disposition", f'{disposition}; filename="cogniflow-{episode_id[:8]}.mp3"')
+            self.end_headers()
+            self.wfile.write(body)
+            return
         if parsed.path in FILES:
             path, content_type = FILES[parsed.path]
             body = path.read_bytes()
@@ -76,7 +101,7 @@ class CogniflowHandler(BaseHTTPRequestHandler):
         self.send_json(200 if items else 503, {"items": items, "warnings": warnings})
 
     def do_POST(self) -> None:
-        if self.path != "/api/generate":
+        if self.path not in ("/api/generate", "/api/audio"):
             self.send_json(404, {"error": "Not found"})
             return
         origin = self.headers.get("Origin", "")
@@ -88,6 +113,17 @@ class CogniflowHandler(BaseHTTPRequestHandler):
             if not 0 < length <= 8192:
                 raise ValueError("Invalid request size.")
             request = json.loads(self.rfile.read(length))
+            if self.path == "/api/audio":
+                episode_id = request.get("episode_id", "")
+                if not isinstance(episode_id, str) or episode_id not in self.server.episodes:
+                    raise ValueError("Report not found. Generate a report first.")
+                output = AUDIO_ROOT / episode_id
+                mp3 = output / "episode.mp3"
+                if not mp3.is_file():
+                    synthesize_macos_mp3(self.server.episodes[episode_id]["script"], output)
+                self.send_json(200, {"audio_url": f"/api/audio/{episode_id}",
+                                     "download_url": f"/api/audio/{episode_id}?download=1"})
+                return
             ids, model = request.get("ids"), request.get("model")
             focus = str(request.get("focus", "AI and machine learning")).strip()[:120]
             if not isinstance(ids, list) or not 1 <= len(ids) <= 5 or len(set(ids)) != len(ids):
@@ -106,11 +142,15 @@ class CogniflowHandler(BaseHTTPRequestHandler):
                 selected.append({**story, "selection_reason": reason})
             load_env_file()
             episode = compose_with_openai(selected, profile, model)
-            self.send_json(200, {"episode": episode})
+            episode_id = uuid.uuid4().hex
+            self.server.episodes[episode_id] = episode
+            self.send_json(200, {"episode": episode, "episode_id": episode_id})
         except (ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
             self.send_json(400, {"error": str(exc)})
         except RuntimeError as exc:
             self.send_json(502, {"error": str(exc)})
+        except subprocess.CalledProcessError:
+            self.send_json(502, {"error": "Audio synthesis failed. Check macOS say and ffmpeg."})
         except urllib.error.URLError:
             self.send_json(502, {"error": "The model service is unavailable. Try again shortly."})
 

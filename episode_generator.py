@@ -9,6 +9,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
@@ -273,6 +274,34 @@ def synthesize_macos(script: str, output: Path, voice: str | None) -> Path:
         command.extend(["-v", voice])
     subprocess.run(command + [script], check=True)
     return output
+
+
+def synthesize_macos_mp3(script: str, output: Path, voice: str | None = None) -> Path:
+    """Generate speech with macOS say, then encode a phone-friendly MP3."""
+    if not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
+        raise RuntimeError("MP3 export requires ffmpeg and ffprobe. Install them before generating audio.")
+    output.mkdir(parents=True, exist_ok=True)
+    mp3 = output / "episode.mp3"
+    with tempfile.TemporaryDirectory(prefix="cogniflow-tts-") as temp_dir:
+        aiff = synthesize_macos(script, Path(temp_dir), voice)
+        subprocess.run(
+            ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(aiff),
+             "-codec:a", "libmp3lame", "-qscale:a", "3", str(mp3)],
+            check=True, capture_output=True,
+        )
+    probe = subprocess.run(
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+         "-of", "default=noprint_wrappers=1:nokey=1", str(mp3)],
+        capture_output=True, text=True,
+    )
+    try:
+        duration = float(probe.stdout.strip()) if probe.returncode == 0 else 0
+    except ValueError:
+        duration = 0
+    if duration < 0.5:
+        mp3.unlink(missing_ok=True)
+        raise RuntimeError("macOS produced an empty audio file. Retry with local speech permission enabled.")
+    return mp3
 
 
 def main(argv: list[str] | None = None) -> int:

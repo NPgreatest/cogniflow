@@ -6,6 +6,7 @@
   <meta name="description" content="Create a source-linked AI and MLE briefing from fresh papers and headlines.">
   <title>Cogniflow — Build your briefing</title>
   <link rel="stylesheet" href="/web_mvp.css">
+  <style>.audio-panel{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:22px 0;padding:16px;background:#f0f7ed;border-radius:12px}.audio-panel audio{flex:1;min-width:240px}.download{display:inline-block;background:#265744;color:#fff;padding:11px 15px;border-radius:9px;text-decoration:none;font-weight:700;white-space:nowrap}.audio-status{font-size:12px;color:#6c766e}</style>
   <script src="/web_mvp.js" defer></script>
 </head>
 <body>
@@ -19,7 +20,7 @@
       </section>
       <aside class="panel build-panel"><div class="section-head"><span class="step">03 / CREATE</span><h2>Your briefing</h2></div><label class="field">What are you trying to learn?<input id="focusInput" maxlength="120" value="AI agents and machine learning" placeholder="e.g. AI agents, inference, TTS"></label><label class="field">Writing model<select id="modelSelect"><option value="gpt-5.6-luna">Luna · lower cost</option><option value="gpt-5.6-terra">Terra · deeper synthesis</option></select></label><div class="selection-preview" id="selectionPreview">Your selected stories will appear here.</div><button id="generateBtn" class="primary" disabled>Generate report <span>→</span></button><p class="fine-print">One paid model request per click. The model sees selected titles and abstracts, not full articles. Review claims before sharing.</p></aside>
     </div>
-    <section class="report panel hidden" id="reportPanel" aria-live="polite"><div class="report-top"><div><span class="step">YOUR COGNIFLOW REPORT</span><h2 id="reportTitle"></h2><p id="reportMeta"></p></div><button class="secondary" id="listenBtn">Listen in browser ▶</button></div><p class="report-intro" id="reportIntro"></p><div id="reportChapters"></div><p class="report-closing" id="reportClosing"></p><div class="report-note">AI-generated from source metadata. Always check the linked originals before relying on details.</div></section>
+    <section class="report panel hidden" id="reportPanel" aria-live="polite"><div class="report-top"><div><span class="step">YOUR COGNIFLOW REPORT</span><h2 id="reportTitle"></h2><p id="reportMeta"></p></div><button class="secondary" id="audioBtn">Create MP3 with Mac voice ♪</button></div><div id="audioPanel" class="audio-panel hidden"><audio id="audioPlayer" controls preload="metadata"></audio><a id="downloadBtn" class="download" download>Download MP3 ↓</a></div><p id="audioStatus" class="audio-status" role="status"></p><p class="report-intro" id="reportIntro"></p><div id="reportChapters"></div><p class="report-closing" id="reportClosing"></p><div class="report-note">AI-generated from source metadata. Always check the linked originals before relying on details.</div></section>
   </main>
   <footer>Cogniflow prototype · Runs locally · Your API key stays on this machine</footer>
 </body>
