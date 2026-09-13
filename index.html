@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Signal turns your interests and trusted sources into a personal daily podcast.">
+  <title>Signal — Your world, worth hearing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="brand-mark">S</span><span>Signal</span></a>
+    <div class="today"><span class="live-dot"></span><span id="dateLabel">Today</span></div>
+    <button class="avatar" aria-label="Open profile">NP</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">YOUR PERSONAL KNOWLEDGE BRIEFING</p>
+      <h1>Your world,<br><em>worth hearing.</em></h1>
+      <p class="hero-copy">Pick the signals. We'll turn what matters into one thoughtful episode, made for your context.</p>
+      <div class="profile-strip" id="profileStrip">
+        <span>Bay Area</span><i></i><span>Tech fluent</span><i></i><span>12 min briefing</span>
+        <button id="editProfile">Tune profile</button>
+      </div>
+    </section>
+
+    <section class="panel onboarding hidden" id="onboardingPanel">
+      <div class="section-heading"><div><span class="step">PROFILE</span><h2>Tune the briefing to you</h2></div><button class="text-button" id="closeProfile">Done</button></div>
+      <div class="profile-grid">
+        <label>Age range<select id="age"><option>18–24</option><option selected>25–34</option><option>35–44</option><option>45–54</option><option>55+</option></select></label>
+        <label>Region<select id="region"><option selected>San Francisco Bay Area</option><option>New York</option><option>Greater China</option><option>Europe</option><option>Global</option></select></label>
+        <label>Knowledge level<select id="level"><option>Curious beginner</option><option selected>Tech fluent</option><option>Domain expert</option></select></label>
+        <label>Episode length<select id="duration"><option>5 minutes</option><option selected>12 minutes</option><option>20 minutes</option><option>30 minutes</option></select></label>
+      </div>
+    </section>
+
+    <section class="discovery">
+      <div class="section-heading"><div><span class="step">01 · SHAPE TODAY'S SIGNAL</span><h2>What should we follow?</h2></div><span class="hint">Mix freely</span></div>
+      <div class="choice-block"><h3>Interests</h3><div class="chips" id="interestChips"></div></div>
+      <div class="choice-block"><h3>Sources</h3><div class="chips source-chips" id="sourceChips"></div></div>
+    </section>
+
+    <section class="feed-section">
+      <div class="section-heading"><div><span class="step">02 · TODAY'S FEED</span><h2>Fresh signals for you</h2></div><button class="text-button" id="refreshFeed">Refresh mix ↻</button></div>
+      <div class="feed-grid" id="feedGrid"></div>
+    </section>
+
+    <aside class="queue" id="queuePanel">
+      <div class="queue-top">
+        <div><span class="step">YOUR EPISODE</span><h2><span id="queueCount">0</span> stories queued</h2></div>
+        <span class="estimate" id="estimate">~0 min</span>
+      </div>
+      <div id="queueItems" class="queue-items"><p class="empty">Choose a few stories above. We'll find the thread between them.</p></div>
+      <button class="primary" id="generateBtn" disabled><span>Generate Podcast</span><span class="arrow">→</span></button>
+    </aside>
+
+    <section class="generation hidden" id="generationPanel" aria-live="polite">
+      <div class="orb"><span></span><span></span><span></span></div>
+      <p class="eyebrow">CRAFTING YOUR EPISODE</p><h2 id="generationTitle">Reading across your sources…</h2>
+      <div class="progress"><div id="progressBar"></div></div>
+      <div class="generation-steps"><span class="active">Filter</span><span>Connect</span><span>Write</span><span>Voice</span></div>
+    </section>
+
+    <section class="player hidden" id="playerPanel">
+      <div class="cover"><div class="cover-ring"></div><span>SIGNAL / 001</span></div>
+      <div class="episode-info"><span class="step">TODAY'S SIGNAL · PERSONAL BRIEFING</span><h2 id="episodeTitle">The frontier is getting practical</h2><p id="episodeSummary"></p><div class="chapters" id="chapters"></div></div>
+      <div class="controls">
+        <div class="timeline"><span id="currentTime">0:00</span><input id="seek" type="range" min="0" max="100" value="0"><span id="totalTime">12:18</span></div>
+        <div class="transport"><button aria-label="Back 15 seconds">↶<small>15</small></button><button class="play" id="playBtn" aria-label="Start Listening">▶</button><button aria-label="Forward 30 seconds">↷<small>30</small></button></div>
+        <button class="feedback" id="feedbackBtn">This was useful</button>
+      </div>
+    </section>
+  </main>
+  <footer><span>Signal prototype · Mock data only</span><span>Designed for curious commutes</span></footer>
+  <script src="app.js"></script>
+</body>
+</html>
